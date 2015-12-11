@@ -1,10 +1,14 @@
 package com.ukdave.adventofcode;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.imageio.ImageIO;
 
 /**
  * Advent of Code - Day 6 Part 2.
@@ -48,11 +52,30 @@ public class Day6_Part2 {
 		}
 		
 		int totalBrightness = 0;
+		int maxBrightness = 0;
 		for (int x = 0; x < 1000; x++) {
 			for (int y = 0; y < 1000; y++) {
-				totalBrightness += lights[x][y];
+				int brightness = lights[x][y];
+				totalBrightness += brightness;
+				if (brightness > maxBrightness) {
+					maxBrightness = brightness;
+				}
 			}
 		}
 		System.out.println(totalBrightness); // 14687245
+		
+		
+		
+		
+		BufferedImage image = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_RGB);
+		float scale = 255 / maxBrightness;
+		for (int x = 0; x < 1000; x++) {
+			for (int y = 0; y < 1000; y++) {
+				int grey = Math.round(lights[x][y] * scale);
+				int rgb = ((grey & 0xff) << 16) + ((grey & 0xff) << 8) + (grey & 0xff);
+				image.setRGB(x, y, rgb);
+			}
+		}
+		ImageIO.write(image, "png", new File("day6.png"));
 	}
 }
